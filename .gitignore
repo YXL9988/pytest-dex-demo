@@ -1,36 +1,26 @@
+# Byte-compiled / cache
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
-*.pdb
-*.egg-info/
-*.egg
 
-
+# Virtual environment
 .venv/
 env/
 venv/
 
+# IDE
+.idea/
+.vscode/
 
+# macOS
+.DS_Store
+
+# Python test/coverage
 .pytest_cache/
 .coverage
+*.cover
 htmlcov/
-.cache/
 
-
-.ipynb_checkpoints
-
-
-.vscode/
-.idea/
-
-
-.DS_Store
-Thumbs.db
-
-
+# Logs
 *.log
-
-
-.env
-.env.*
