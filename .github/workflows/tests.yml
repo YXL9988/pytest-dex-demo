@@ -1,0 +1,49 @@
+name: Pytest CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run smoke tests (-m smoke)
+        run: |
+          set -e
+          pytest -q -m smoke || \
+          if [ "$?" = "5" ]; then echo "No smoke tests collected. Skipping."; exit 0; else exit 1; fi
+
+      - name: Run happy tests (-m happy)
+        run: |
+          set -e
+          pytest -q -m happy || \
+          if [ "$?" = "5" ]; then echo "No happy tests collected. Skipping."; exit 0; else exit 1; fi
+
+      - name: Run negative tests (-m negative)
+        run: |
+          set -e
+          pytest -q -m negative || \
+          if [ "$?" = "5" ]; then echo "No negative tests collected. Skipping."; exit 0; else exit 1; fi
+
+      - name: Run full test suite
+        run: pytest -q --disable-warnings --maxfail=1
