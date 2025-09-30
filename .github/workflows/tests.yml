@@ -47,3 +47,14 @@ jobs:
 
       - name: Run full test suite
         run: pytest -q --disable-warnings --maxfail=1
+
+      - name: Run tests with HTML report
+        run: |
+          mkdir -p reports
+          pytest --html=report.html --self-contained-html
+
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: pytest-report
+          path: report.html

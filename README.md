@@ -56,3 +56,10 @@ By default, it is skipped, unless you provide:
 pytest tests/contract_api_test.py -v
 ```
 This demo test is intentionally skipped by default, but it shows how contract-level validation could be integrated into a CI/CD pipeline once proper testnet configurations are available.
+
+### Test Reports
+All tests generate **HTML reports** via [pytest-html](https://pypi.org/project/pytest-html/).
+
+```bash
+pytest
+# or view the report under reports/report.html
