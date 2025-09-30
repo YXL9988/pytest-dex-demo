@@ -29,6 +29,10 @@ class Dex:
             return {"status": "REJECTED", "reason": "BAD_PRICE_RANGE"}
         if pool_id not in self.pools:
             return {"status": "REJECTED", "reason": "POOL_NOT_FOUND"}
+        if amountA > 1e18 or amountB > 1e18:
+            return {"status": "REJECTED", "reason": "OVERFLOWS"}
+        if amountA / max(amountB, 1) > 1e16:
+            return {"status": "REJECTED", "reason": "BAD_RATIO"}
 
         self.pools[pool_id]["liquidity"] += amountA
 
@@ -45,7 +49,7 @@ class Dex:
         l = self.pools.get(pool_id,{}).get("liquidity",0) #fallback if no pool id no liquidity
         if l <= 0:
             return None, {"status": "REVERTED", "reason": "NO_LIQUIDITY"}
-        l_impact = min(amount_in/max(l,1),0.10) # slippage assumption
+        l_impact = min(amount_in/max(l,1),0.10) # slippage cap assumption
         return self.base_rate * (1-l_impact), None # actual rate depends on liquidity and amount_in
 
     def get_quote(self, amount_in,pool_id="USDC-WETH", rate=None, slippage_bps=50):

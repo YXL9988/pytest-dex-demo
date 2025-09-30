@@ -8,6 +8,7 @@ def test_swap_happy_path(dex):
     res = dex.submit_swap(actual_out=q["minOut"], min_out=q["minOut"])
     assert res["status"] == "SUCCESS"
 
+
 @pytest.mark.negative
 def test_swap_reverted_when_slippage_exceeded(dex):
     q = dex.get_quote(amount_in=1_000_000, slippage_bps=50)
@@ -45,6 +46,16 @@ def test_quite_with_no_liquidity(dex):
     assert res["status"] == "REVERTED"
     assert res["reason"] == "NO_LIQUIDITY"
 
+@pytest.mark.edge
+def test_quote_fails_on_empty_pool(dex,usdc_weth_pool_empty):
+    res = dex.get_quote(amount_in=1000,pool_id=usdc_weth_pool_empty,slippage_bps=50)
+    assert res.get("expectedOut",0) == 0 #expectedOut["reason"] = "NO_LIQUIDITY"
+
+@pytest.mark.edge
+def test_high_fee_reduces_expected_out(dex, usdc_weth_pool_high_fee):
+    q = dex.get_quote(amount_in=1000000, pool_id=usdc_weth_pool_high_fee, slippage_bps=50)
+    assert q["expectedOut"] > q["minOut"]
+    assert q["minOut"] < 1000
 
 @pytest.mark.negative
 def test_quote_with_negative_amount(dex):
