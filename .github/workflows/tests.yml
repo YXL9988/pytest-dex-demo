@@ -26,6 +26,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pytest-html
 
       - name: Run smoke tests (-m smoke)
         run: |
@@ -54,7 +55,9 @@ jobs:
           pytest --html=report.html --self-contained-html
 
       - name: Upload report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pytest-report
-          path: report.html
+          name: pytest-reports-${{ matrix.python-version }}
+          path: reports/*
+          if-no-files-found: warn
