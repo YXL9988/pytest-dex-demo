@@ -1,0 +1,16 @@
+{
+  "USDC-WETH": {
+    "tokenA": "USDC",
+    "tokenB": "WETH",
+    "liquidity": 5000000,
+    "fee_bps": 30,
+    "rate": 0.00025
+  },
+  "USDT-WBTC": {
+    "tokenA": "USDT",
+    "tokenB": "WBTC",
+    "liquidity": 1200000,
+    "fee_bps": 20,
+    "rate": 0.00000878
+  }
+}

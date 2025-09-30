@@ -3,7 +3,7 @@ import pytest
 @pytest.mark.smoke
 @pytest.mark.happy
 def test_add_liquidity_happy_and_pool_info(dex, usdc_weth_pool):
-    res = dex.add_liquidity(pool_id=usdc_weth_pool, amountA=1_000_000, amountB=3.2e14, price_min=1000, price_max=2000)
+    res = dex.add_liquidity(pool_id=usdc_weth_pool, amountA=1_000_000, amountB=3.2e14, price_min=3000, price_max=5000)
     assert res["status"] == "ADDED"
 
     p = dex.get_pool(usdc_weth_pool)
