@@ -63,3 +63,13 @@ All tests generate **HTML reports** via [pytest-html](https://pypi.org/project/p
 ```bash
 pytest
 # or view the report under reports/report.html
+```
+
+---
+
+>**Note**   
+>This project **simulates DEX core logic in Python** for the purpose of demonstrating test framework design.  
+>It is **not a real smart contract implementation** — the smart contract interaction part is only shown as a demo using Web3 API calls.  
+>The focus is on **test case design, fixtures, negative/edge case coverage, and CI/CD integration**.
+
+---
