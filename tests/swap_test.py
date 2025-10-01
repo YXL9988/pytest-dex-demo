@@ -31,15 +31,15 @@ def test_quote_with_nonexistent_pool(dex):
 @pytest.mark.negative
 def test_extreme_low_rate(dex, test_rate):
     q = dex.get_quote(amount_in=1_000_000, rate=test_rate, slippage_bps=50)
-    assert q["expectedOut"] < 100
+    assert q["expected_out_after_fee"] < 100
 
 @pytest.mark.edge
 def test_quote_with_large_trade_slippage_capped(dex):
     q = dex.get_quote(amount_in=10 ** 12, slippage_bps=50)
-    assert "expectedOut" in q and "minOut" in q
+    assert "expected_out_after_fee" in q and "minOut" in q
 
 @pytest.mark.negative
-def test_quite_with_no_liquidity(dex):
+def test_quote_with_no_liquidity(dex):
     pool_id = "EMPTY-POOL"
     dex.create_pool(pool_id,"USDC","WETH",initial_liquidity=0)
     res = dex.get_quote(amount_in=1000,pool_id=pool_id,slippage_bps=50)
@@ -49,12 +49,14 @@ def test_quite_with_no_liquidity(dex):
 @pytest.mark.edge
 def test_quote_fails_on_empty_pool(dex,usdc_weth_pool_empty):
     res = dex.get_quote(amount_in=1000,pool_id=usdc_weth_pool_empty,slippage_bps=50)
-    assert res.get("expectedOut",0) == 0 #expectedOut["reason"] = "NO_LIQUIDITY"
+    assert res["status"] == "REVERTED"
+    assert res["reason"] == "NO_LIQUIDITY"
 
 @pytest.mark.edge
 def test_high_fee_reduces_expected_out(dex, usdc_weth_pool_high_fee):
     q = dex.get_quote(amount_in=1000000, pool_id=usdc_weth_pool_high_fee, slippage_bps=50)
-    assert q["expectedOut"] > q["minOut"]
+    assert q["expectedOut"] > q["expected_out_after_fee"]
+    assert q["expected_out_after_fee"] > q["minOut"]
     assert q["minOut"] < 1000
 
 @pytest.mark.negative
@@ -62,10 +64,10 @@ def test_quote_with_negative_amount(dex):
     with pytest.raises(Exception):
         dex.get_quote(amount_in=-100, pool_id="USDC-WETH", slippage_bps=50)
 
-@pytest.mark.negative
-def test_quote_with_slippage_too_high(dex):
+@pytest.mark.edge
+def test_quote_with_max_slippage(dex):
     q = dex.get_quote(amount_in=1000, slippage_bps=10000)
-    assert q["minOut"] <= q["expectedOut"]
+    assert q["minOut"] <= q["expected_out_after_fee"]
 
 @pytest.mark.negative
 def test_swap_fails_when_actual_out_too_low(dex):
