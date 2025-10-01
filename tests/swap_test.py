@@ -73,3 +73,10 @@ def test_swap_fails_when_actual_out_too_low(dex):
     res = dex.submit_swap(actual_out=q["minOut"] - 100, min_out=q["minOut"])
     assert res["status"] == "REVERTED"
     assert res["reason"] == "SLIPPAGE_EXCEEDED"
+
+@pytest.mark.negative
+def test_swap_reverted_when_no_liquidity(dex):
+    dex.pools["USDC-WETH"]["liquidity"] = 0
+    q = dex.get_quote(amount_in=1000, pool_id="USDC-WETH")
+    assert q["status"] == "REVERTED"
+    assert q["reason"] == "NO_LIQUIDITY"
