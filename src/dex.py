@@ -26,15 +26,15 @@ class Dex:
 
     def add_liquidity(self, pool_id, amountA, amountB, price_min, price_max):
         if amountA <= 0 or amountB <= 0:
-            return {"status": "REJECTED", "reason": "BAD_AMOUNTS"}
+            return {"status": "REVERTED", "reason": "BAD_AMOUNTS"}
         if price_min >= price_max:
-            return {"status": "REJECTED", "reason": "BAD_PRICE_RANGE"}
+            return {"status": "REVERTED", "reason": "BAD_PRICE_RANGE"}
         if pool_id not in self.pools:
-            return {"status": "REJECTED", "reason": "POOL_NOT_FOUND"}
+            return {"status": "REVERTED", "reason": "POOL_NOT_FOUND"}
         if amountA > 1e18 or amountB > 1e18:
-            return {"status": "REJECTED", "reason": "OVERFLOWS"}
+            return {"status": "REVERTED", "reason": "OVERFLOWS"}
         if amountA / max(amountB, 1) > 1e16:
-            return {"status": "REJECTED", "reason": "BAD_RATIO"}
+            return {"status": "REVERTED", "reason": "BAD_RATIO"}
 
         self.pools[pool_id]["liquidity"] += amountA
 
