@@ -62,8 +62,11 @@ All tests generate **HTML reports** via [pytest-html](https://pypi.org/project/p
 
 ```bash
 pytest
-# or view the report under reports/report.html
 ```
+After running the tests, you can open the generated HTML report at:
+`reports/report.html`
+
+
 
 ---
 
