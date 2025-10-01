@@ -12,7 +12,7 @@ def dex():
 def usdc_weth_pool(dex):
     pool_id = "USDC-WETH"
     if pool_id not in dex.pools:
-        dex.add_pool(pool_id, "USDC", "WETH")
+        dex.create_pool(pool_id, "USDC", "WETH")
     # dex.add_liquidity(pool_id, amountA=1_000_000, amountB=1_000_000, price_min=3000, price_max=5000)
     assert "liquidity" in dex.pools[pool_id]
     return pool_id
@@ -21,7 +21,7 @@ def usdc_weth_pool(dex):
 def usdc_weth_pool_empty(dex):
     pool_id = "USDC-WETH"
     if pool_id not in dex.pools:
-        dex.add_pool(pool_id, tokenA="USDC", tokenB="WETH")
+        dex.create_pool(pool_id, tokenA="USDC", tokenB="WETH")
     dex.pools[pool_id]["liquidity"] = 0
     return pool_id
 

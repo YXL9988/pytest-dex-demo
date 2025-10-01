@@ -4,8 +4,8 @@
 # Pytest DEX Demo
 
 A simplified demo project to showcase **pytest framework** with basic DEX (Decentralized Exchange) trading flows:
-- Swap (happy path & slippage exceeded)
-- Liquidity pool (add / invalid cases)
+- Swap (happy path, slippage exceeded, fees routed back to pool for LPs)
+- Liquidity pool (create pool / add liquidity / invalid cases)
 - Smart Contract (Web3 API call demo)
 - Pytest fixtures (conftest)
 

@@ -13,7 +13,9 @@ class Dex:
             #fallback
             self.pools = {"USDC-WETH":{"tokenA": "USDC", "tokenB": "WETH", "liquidity": 5_000_000, "fee": fee_bps}}
 
-    def add_pool(self, pool_id, tokenA, tokenB,initial_liquidity=0):
+    def create_pool(self, pool_id, tokenA, tokenB,initial_liquidity=0):
+        if pool_id in self.pools:
+            return {"status": "REJECTED","reason":"Pool already exists","pool_id":pool_id}
         self.pools[pool_id] = {
             "tokenA": tokenA,
             "tokenB": tokenB,

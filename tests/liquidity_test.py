@@ -60,6 +60,5 @@ def test_fee_accumulates_in_pool(dex, usdc_weth_pool):
         quoted_fee=q["fee"]
     )
     assert res["status"] == "SUCCESS"
-
     pool_after = dex.get_pool(usdc_weth_pool)["liquidity"]
     assert pool_after > pool_before

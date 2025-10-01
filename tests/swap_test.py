@@ -41,7 +41,7 @@ def test_quote_with_large_trade_slippage_capped(dex):
 @pytest.mark.negative
 def test_quite_with_no_liquidity(dex):
     pool_id = "EMPTY-POOL"
-    dex.add_pool(pool_id,"USDC","WETH",initial_liquidity=0)
+    dex.create_pool(pool_id,"USDC","WETH",initial_liquidity=0)
     res = dex.get_quote(amount_in=1000,pool_id=pool_id,slippage_bps=50)
     assert res["status"] == "REVERTED"
     assert res["reason"] == "NO_LIQUIDITY"
