@@ -46,3 +46,20 @@ def test_liquidity_overflow(dex, usdc_weth_pool):
 def test_liquidity_bad_ratio(dex, usdc_weth_pool):
     res = dex.add_liquidity(pool_id=usdc_weth_pool,amountA=10**18, amountB=1, price_min=3000, price_max=5000)
     assert res["status"] == "REJECTED" and res["reason"] == "BAD_RATIO"
+
+@pytest.mark.edge
+def test_fee_accumulates_in_pool(dex, usdc_weth_pool):
+    pool_before = dex.get_pool(usdc_weth_pool)["liquidity"]
+
+    q = dex.get_quote(amount_in=1_000_000, pool_id=usdc_weth_pool,slippage_bps=50)
+
+    res = dex.submit_swap(
+        pool_id=usdc_weth_pool,
+        actual_out=q["expected_out_after_fee"],
+        min_out=q["minOut"],
+        quoted_fee=q["fee"]
+    )
+    assert res["status"] == "SUCCESS"
+
+    pool_after = dex.get_pool(usdc_weth_pool)["liquidity"]
+    assert pool_after > pool_before

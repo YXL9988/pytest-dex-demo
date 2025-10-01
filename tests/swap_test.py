@@ -2,17 +2,17 @@ import pytest
 
 @pytest.mark.smoke
 @pytest.mark.happy
-def test_swap_happy_path(dex):
-    q = dex.get_quote(amount_in=1_000_000, slippage_bps=50)
-    assert q["expectedOut"] > q["minOut"]
-    res = dex.submit_swap(actual_out=q["minOut"], min_out=q["minOut"])
+def test_swap_happy_path(dex,usdc_weth_pool):
+    q = dex.get_quote(pool_id=usdc_weth_pool, amount_in=1_000_000, slippage_bps=50)
+    assert q["expected_out_after_fee"] > q["minOut"]
+    res = dex.submit_swap(pool_id=usdc_weth_pool,actual_out=q["minOut"], min_out=q["minOut"])
     assert res["status"] == "SUCCESS"
 
 
 @pytest.mark.negative
-def test_swap_reverted_when_slippage_exceeded(dex):
-    q = dex.get_quote(amount_in=1_000_000, slippage_bps=50)
-    res = dex.submit_swap(actual_out=q["minOut"] - 1, min_out=q["minOut"])
+def test_swap_reverted_when_slippage_exceeded(dex,usdc_weth_pool):
+    q = dex.get_quote(pool_id=usdc_weth_pool,amount_in=1_000_000, slippage_bps=50)
+    res = dex.submit_swap(pool_id=usdc_weth_pool,actual_out=q["minOut"] - 1, min_out=q["minOut"])
     assert res["status"] == "REVERTED"
     assert res["reason"] == "SLIPPAGE_EXCEEDED"
 
@@ -70,7 +70,7 @@ def test_quote_with_slippage_too_high(dex):
 @pytest.mark.negative
 def test_swap_fails_when_actual_out_too_low(dex):
     q = dex.get_quote(amount_in=1000, pool_id="USDC-WETH", slippage_bps=50)
-    res = dex.submit_swap(actual_out=q["minOut"] - 100, min_out=q["minOut"])
+    res = dex.submit_swap(pool_id="USDC-WETH",actual_out=q["minOut"] - 100, min_out=q["minOut"])
     assert res["status"] == "REVERTED"
     assert res["reason"] == "SLIPPAGE_EXCEEDED"
 

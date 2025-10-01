@@ -40,7 +40,7 @@ class Dex:
 
     def _apply_fee(self,amount_out, fee_bps):
         fee = amount_out * (fee_bps/10_000)
-        return amount_out - fee
+        return amount_out - fee, fee
 
     def _effective_rate(self,amount_in,pool_id):
         if not pool_id in self.pools:
@@ -64,14 +64,21 @@ class Dex:
         pool = self.pools.get(pool_id,{})
         fee_bps = pool.get("fee_bps",self.fee_bps)
 
-        expected_out = amount_in * rate
-        expected_out_after_fee = self._apply_fee(expected_out,fee_bps)
+        expected_out = amount_in * rate # pre-fee
+        expected_out_after_fee, fee = self._apply_fee(expected_out,fee_bps)
         min_out = expected_out_after_fee * (1 - slippage_bps / 10000)
-        return {"expectedOut": int(expected_out), "minOut": int(min_out)}
+        return {
+            "expectedOut": int(expected_out),
+            "fee":float(fee),
+            "expected_out_after_fee": int(expected_out_after_fee),
+            "minOut": int(min_out)
+        }
 
-    def submit_swap(self, actual_out, min_out):
+    def submit_swap(self, pool_id,actual_out, min_out, quoted_fee=None):
         if actual_out < min_out:
             return {"status": "REVERTED", "reason": "SLIPPAGE_EXCEEDED"}
+        if quoted_fee is not None and pool_id in self.pools:
+            self.pools[pool_id]["liquidity"] += quoted_fee
         return {"status": "SUCCESS"}
 
     def get_pool(self, pool_id="USDC-WETH"):
