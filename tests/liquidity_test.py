@@ -36,11 +36,6 @@ def test_nonexistent_pool(dex):
     res = dex.add_liquidity(pool_id="FAKE-POOL", amountA=1000, amountB=1000, price_min=3000, price_max=5000)
     assert res["status"] == "REVERTED" and res["reason"] == "POOL_NOT_FOUND"
 
-@pytest.mark.edge
-def test_liquidity_overflow(dex, usdc_weth_pool):
-    res = dex.add_liquidity(pool_id=usdc_weth_pool,amountA=10**30, amountB=10**30, price_min=3000, price_max=5000)
-    assert res["status"] == "REVERTED" and res["reason"] == "OVERFLOWS"
-
 
 @pytest.mark.negative
 def test_liquidity_bad_ratio(dex, usdc_weth_pool):
@@ -62,3 +57,8 @@ def test_fee_accumulates_in_pool(dex, usdc_weth_pool):
     assert res["status"] == "SUCCESS"
     pool_after = dex.get_pool(usdc_weth_pool)["liquidity"]
     assert pool_after > pool_before
+
+@pytest.mark.edge
+def test_liquidity_overflow(dex, usdc_weth_pool):
+    res = dex.add_liquidity(pool_id=usdc_weth_pool,amountA=10**30, amountB=10**30, price_min=3000, price_max=5000)
+    assert res["status"] == "REVERTED" and res["reason"] == "OVERFLOWS"
