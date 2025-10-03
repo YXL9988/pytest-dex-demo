@@ -61,7 +61,7 @@ def test_quote_with_max_slippage(dex):
     assert q["expected_out_after_fee"] > 0
 
 @pytest.mark.edge
-def test_quote_with_large_trade_slippage_capped(dex):
+def test_quote_valid_for_large_trade(dex):
     q = dex.get_quote(amount_in=10 ** 12, slippage_bps=50)
     assert "expected_out_after_fee" in q and "minOut" in q
 
