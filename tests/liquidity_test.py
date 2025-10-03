@@ -40,7 +40,7 @@ def test_nonexistent_pool(dex):
     assert res["status"] == "REVERTED" and res["reason"] == "POOL_NOT_FOUND"
 
 
-@pytest.mark.negative
+@pytest.mark.edge
 def test_liquidity_bad_ratio(dex, usdc_weth_pool):
     res = dex.add_liquidity(pool_id=usdc_weth_pool,amountA=10**18, amountB=1, price_min=3000, price_max=5000)
     assert res["status"] == "REVERTED" and res["reason"] == "BAD_RATIO"
