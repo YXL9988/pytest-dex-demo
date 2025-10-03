@@ -2,13 +2,16 @@ import pytest
 
 @pytest.mark.smoke
 @pytest.mark.happy
-def test_add_liquidity_happy_and_pool_info(dex, usdc_weth_pool):
+def test_add_liquidity_updates_pool(dex, usdc_weth_pool):
+    p_before = dex.get_pool(usdc_weth_pool)["liquidity"]
+
     res = dex.add_liquidity(pool_id=usdc_weth_pool, amountA=1_000_000, amountB=3.2e14, price_min=3000, price_max=5000)
     assert res["status"] == "ADDED"
 
-    p = dex.get_pool(usdc_weth_pool)
+    p_after  = dex.get_pool(usdc_weth_pool)
     for k in ("tokenA", "tokenB", "liquidity"):
-        assert k in p
+        assert k in p_after, f"{k} missing in pool data"
+    assert p_after["liquidity"] > p_before
 
 @pytest.mark.happy
 def test_add_liquidity_check_accumulate(dex, usdc_weth_pool):
